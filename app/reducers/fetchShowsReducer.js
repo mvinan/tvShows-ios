@@ -2,7 +2,7 @@ const initialState = {
   shows: []
 }
 
-export const fetchShows = (state=initialState, action) => {
+const fetchShows = (state=initialState, action) => {
   let newState
   switch (action.type) {
     case 'FETCH_SHOWS':
@@ -12,3 +12,5 @@ export const fetchShows = (state=initialState, action) => {
       return state
   }
 }
+
+export default fetchShows
