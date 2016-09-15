@@ -8,8 +8,11 @@ export const fetchShows = (url, listView) => {
 
         dispatch({
           type: 'FETCH_SHOWS',
-          payload: shows
+          payload: axios.get(url)
         })
       })
   }
+}
+
+export const pressShow = () => {
 }

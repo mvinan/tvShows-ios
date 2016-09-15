@@ -13,20 +13,36 @@ import {
 } from 'react-native';
 
 /*Redux*/
-import {Provider} from 'react-redux'
+import { Provider } from 'react-redux'
 import store from './app/store'
-import App from './app/App'
+import Home from './app/views/Home'
+import App from './app/views/App'
 
 class tvShows extends Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      displayApp: false,
+      displayWelcome: true
+    }
+  }
+
+  displayApp(bool){
+    this.setState({
+      displayApp: bool,
+      displayWelcome: !bool
+    })
+  }
+
   render() {
+    if(this.state.displayWelcome){
+      return (
+        <Home onAction={this.displayApp.bind(this)}/>
+      )
+    }
     return (
       <Provider store={store}>
-        <NavigatorIOS
-          initialRoute={{
-            component: App,
-            title: 'Home'
-          }}
-        />
+        <App />
       </Provider>
     );
   }
