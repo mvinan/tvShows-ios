@@ -5,7 +5,8 @@ import {
   StyleSheet,
   ScrollView,
   ListView,
-  Image
+  Image,
+  TouchableHighlight
 } from 'react-native';
 import {connect} from 'react-redux'
 import autobind from 'autobind-decorator'
@@ -15,6 +16,9 @@ import axios from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons'
 import color from '../colorPalette'
 import Button from 'react-native-button'
+
+/*Views*/
+import SingleShow from './SingleShow'
 var {
   darkSnow,
   darkSmoke,
@@ -25,7 +29,7 @@ var {
   lightOrange,
   purple,
   red,
-  backgroundRow
+  backgroundRow,
 } = color
 
 @connect( store => ({
@@ -76,43 +80,52 @@ class Shows extends Component {
     }
   }
 
-  onPressShow(){
-    
+  @autobind
+  passShow(show){
+    this.props.navigator.push({
+      component: SingleShow,
+      title: 'Detalles',
+      show
+    })
   }
 
   @autobind
   renderRow(show){
     let iconRating = this.currentRanting(show.rating.average)
+    const pressShow = () => this.passShow(show)
     return (
-      <View
+      <TouchableHighlight
         style={styles.row}
-        onPress={this.onPressShow}
+        onPress={pressShow}
+        underlayColor={darkSnow}
       >
-        <View style={styles.description}>
-          <Image
-            source={{uri: show.image.medium}}
-            style={styles.showImage}
-            resizeMode="contain"
-          />
+        <View style={styles.touchContainer}>
+          <View style={styles.description}>
+            <Image
+              source={{uri: show.image.medium}}
+              style={styles.showImage}
+              resizeMode="contain"
+            />
 
-          <View style={styles.descriptionText}>
-            <Text style={styles.showTitle}>{show.name}</Text>
+            <View style={styles.descriptionText}>
+              <Text style={styles.showTitle}>{show.name}</Text>
 
-            <View style={styles.rankContainer}>
-              {iconRating}
-              <Text style={styles.rankText}>
-                {show.rating.average} / 10
-              </Text>
+              <View style={styles.rankContainer}>
+                {iconRating}
+                <Text style={styles.rankText}>
+                  {show.rating.average} / 10
+                </Text>
+              </View>
             </View>
           </View>
-        </View>
 
-        <Icon
-          name="ios-arrow-forward-outline"
-          size={25}
-          color={darkSnow}
-        />
-      </View>
+          <Icon
+            name="ios-arrow-forward-outline"
+            size={25}
+            color={marvel}
+          />
+        </View>
+      </TouchableHighlight>
     )
   }
 
@@ -139,6 +152,11 @@ class Shows extends Component {
 const styles = StyleSheet.create({
   shows: {
     padding: 7
+  },
+  touchContainer: {
+    flex: 1,
+    justifyContent: 'space-between', flexDirection: 'row',
+    alignItems: 'center'
   },
   showTitle: {
     fontSize: 25,

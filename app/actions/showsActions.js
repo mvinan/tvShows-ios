@@ -13,6 +13,3 @@ export const fetchShows = (url, listView) => {
       })
   }
 }
-
-export const pressShow = () => {
-}
