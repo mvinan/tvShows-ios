@@ -6,11 +6,13 @@ import {
   ScrollView,
   ListView,
   Image,
+  TextInput,
   TouchableHighlight
 } from 'react-native';
 import {connect} from 'react-redux'
 import autobind from 'autobind-decorator'
 import {fetchShows} from '../actions/showsActions';
+import getCurrentRating from '../utilities/getCurrentRating'
 
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -29,47 +31,22 @@ var {
   lightOrange,
   purple,
   red,
+  orange,
   backgroundRow,
 } = color
+
+import currentRating from '../reducers/currentRatingReducer'
 
 @connect( store => ({
   shows: store.fetchShows.shows.data,
   showsLoaded: store.fetchShows.showsLoaded,
-  dataSource: store.fetchShows.dataSource
+  dataSource: store.fetchShows.dataSource,
+  rating: store.currentRating
 }))
 class Shows extends Component {
   constructor(props){
     super(props)
-  }
-
-  @autobind
-  currentRanting(rating){
-    let currentColor, currentIcon
-
-    // Bad rating 1 - 4
-    if(rating < 4){
-      currentColor = 'black'
-      currentIcon = 'md-sad'
-    }
-    // Good rating 5-7
-    if(rating > 4 && rating <= 8){
-      currentColor = coolYellow
-      currentIcon = 'md-thumbs-down'
-    }
-    // Excelent rating 8
-    if(rating > 8){
-      currentColor = red
-      currentIcon = 'md-flame'
-    }
-
-    return (
-      <Icon
-        style={styles.rankIcon}
-        name={currentIcon}
-        size={20}
-        color={currentColor}
-      />
-    )
+    console.log(this.props);
   }
 
   componentDidMount(){
@@ -91,7 +68,8 @@ class Shows extends Component {
 
   @autobind
   renderRow(show){
-    let iconRating = this.currentRanting(show.rating.average)
+    let rating = getCurrentRating(show.rating.average)
+
     const pressShow = () => this.passShow(show)
     return (
       <TouchableHighlight
@@ -110,8 +88,18 @@ class Shows extends Component {
             <View style={styles.descriptionText}>
               <Text style={styles.showTitle}>{show.name}</Text>
 
+              <Text style={[styles.ratingNumber, {color: rating.currentColor} ]}>
+                {show.rating.average || 0}
+              </Text>
+
               <View style={styles.rankContainer}>
-                {iconRating}
+                <Icon
+                  style={styles.rankIcon}
+                  name={rating.currentIconName}
+                  size={20}
+                  color={rating.currentColor}
+                />
+
                 <Text style={styles.rankText}>
                   {show.rating.average} / 10
                 </Text>
@@ -136,6 +124,9 @@ class Shows extends Component {
       let ds = dataSource.cloneWithRows(shows)
       return (
         <View style={styles.showContainer}>
+          <View>
+
+          </View>
           <ListView
             dataSource={ds}
             renderRow={this.renderRow}
@@ -209,6 +200,12 @@ const styles = StyleSheet.create({
   rankText: {
     color: darkSmoke,
     marginLeft: 20
+  },
+  ratingNumber: {
+    fontSize: 60,
+    fontWeight: 'bold',
+    color: orange,
+    lineHeight: 60
   },
 })
 

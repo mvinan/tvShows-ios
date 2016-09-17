@@ -13,3 +13,10 @@ export const fetchShows = (url, listView) => {
       })
   }
 }
+
+export const getCurrentRating = (rating) => {
+  return {
+    type: 'GET_CURRENT_RATING_INFO',
+    rating
+  }
+}
